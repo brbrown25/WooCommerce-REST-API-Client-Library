@@ -403,16 +403,24 @@ class WC_API_Client {
 		curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, false );
 		curl_setopt( $ch, CURLOPT_VERBOSE, $this->_curl_debug );					
 		curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, $this->_api_call_timeout );
-    curl_setopt( $ch, CURLOPT_TIMEOUT, $this->_api_call_timeout );
-    curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+    	curl_setopt( $ch, CURLOPT_TIMEOUT, $this->_api_call_timeout );
+    	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 
-    if ( 'POST' === $method ) {
-			curl_setopt( $ch, CURLOPT_POST, true );
-			curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $params ) );
-   	} else if ( 'DELETE' === $method ) {
-			curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, 'DELETE' );
-    }
-
+   		switch ($method) {
+      		case 'POST':
+        		curl_setopt( $ch, CURLOPT_POST, true );
+        		curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $params ) );
+       		break;
+        
+        	case 'DELETE':
+        		curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, 'DELETE' );
+       		break;
+       
+       		case 'PUT':
+        		curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, "PUT" );
+         		curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $params ) );
+       		break;
+     	}
 		$return = curl_exec( $ch );
 
 		$code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
